@@ -10,7 +10,7 @@ module.exports = {
 			env: {
 				NODE_ENV: "production",
 				PORT: 3000,
-				MONGODB_URI: "mongodb+srv://AcademyTEAS:WGUAcademy123@cluster0.47vsctq.mongodb.net/voucher-system?retryWrites=true&w=majority&appName=Cluster0",
+				MONGODB_URI: process.env.MONGODB_URI,
 			},
 		},
 	],

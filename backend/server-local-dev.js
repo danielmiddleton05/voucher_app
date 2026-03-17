@@ -19,7 +19,12 @@ app.use(express.json());
 
 // MongoDB connection
 let db;
-const MONGODB_URI = process.env.MONGODB_URI || "mongodb+srv://AcademyTEAS:WGUAcademy123@cluster0.47vsctq.mongodb.net/voucher-system?retryWrites=true&w=majority&appName=Cluster0";
+const MONGODB_URI = process.env.MONGODB_URI;
+
+if (!MONGODB_URI) {
+	console.error("MONGODB_URI is not set. Add it to backend/.env or your runtime environment.");
+	process.exit(1);
+}
 
 // Connect to MongoDB with retry logic
 async function connectToMongoDB() {
@@ -53,7 +58,7 @@ async function connectToMongoDB() {
 			const collections = await db.listCollections().toArray();
 			console.log(
 				"Available collections:",
-				collections.map((c) => c.name)
+				collections.map((c) => c.name),
 			);
 
 			return;

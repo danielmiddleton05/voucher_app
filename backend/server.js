@@ -37,7 +37,12 @@ console.log("Middleware configured");
 
 // MongoDB connection
 let db;
-const MONGODB_URI = process.env.MONGODB_URI || "mongodb+srv://AcademyTEAS:WGUAcademy123@cluster0.47vsctq.mongodb.net/voucher-system?retryWrites=true&w=majority&appName=Cluster0";
+const MONGODB_URI = process.env.MONGODB_URI;
+
+if (!MONGODB_URI) {
+	console.error("MONGODB_URI is not set. Add it to backend/.env or your runtime environment.");
+	process.exit(1);
+}
 
 console.log("Attempting to connect to MongoDB...");
 
@@ -54,27 +59,17 @@ async function connectToMongoDB() {
 			console.log("Attempting to connect to MongoDB with URI:", maskedUri);
 
 			const client = new MongoClient(MONGODB_URI, {
-				useNewUrlParser: true,
-				useUnifiedTopology: true,
 				serverSelectionTimeoutMS: 30000,
 				connectTimeoutMS: 30000,
 				socketTimeoutMS: 45000,
 				family: 4,
-				authSource: "admin",
-				authMechanism: "SCRAM-SHA-1",
-				directConnection: false,
 			});
 
 			console.log("MongoDB client options:", {
-				useNewUrlParser: true,
-				useUnifiedTopology: true,
 				serverSelectionTimeoutMS: 30000,
 				connectTimeoutMS: 30000,
 				socketTimeoutMS: 45000,
 				family: 4,
-				authSource: "admin",
-				authMechanism: "SCRAM-SHA-1",
-				directConnection: false,
 			});
 
 			console.log("Attempting to connect...");
@@ -89,7 +84,7 @@ async function connectToMongoDB() {
 			const collections = await db.listCollections().toArray();
 			console.log(
 				"Available collections:",
-				collections.map((c) => c.name)
+				collections.map((c) => c.name),
 			);
 
 			return;
