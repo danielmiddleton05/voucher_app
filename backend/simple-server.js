@@ -1,10 +1,12 @@
 const express = require("express");
 const { MongoClient } = require("mongodb");
 const cors = require("cors");
+const path = require("path");
 require("dotenv").config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+const FRONTEND_DIR = path.join(__dirname, "..", "frontend");
 
 console.log("=== STARTING LOCAL SERVER ===");
 console.log(`Port: ${PORT}`);
@@ -20,6 +22,7 @@ const corsOptions = {
 // Middleware
 app.use(cors(corsOptions));
 app.use(express.json());
+app.use(express.static(FRONTEND_DIR));
 
 // MongoDB connection
 let db;
@@ -55,6 +58,10 @@ async function connectToMongoDB() {
 }
 
 // Routes
+app.get("/", (req, res) => {
+	res.sendFile(path.join(FRONTEND_DIR, "index.html"));
+});
+
 app.get("/health", (req, res) => {
 	res.json({
 		status: "OK",
