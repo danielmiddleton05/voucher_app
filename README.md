@@ -59,11 +59,15 @@ npm install
 
 - Copy backend/.env.example to backend/.env
 - Put your MongoDB URI into backend/.env
+- Refer to the instructions at the bottom of this page for how to find your MongoDB URI.
 
 Example content:
 
-- PORT=3000
-- MONGODB_URI=your-real-uri-here
+```
+PORT=3000
+    MONGODB_URI=mongodb+srv://AcademyTEAS:C23umRPAD2craPkX@cluster0.47vsctq.mongodb.net/
+    NODE_ENV=production
+```
 
 Important:
 
@@ -71,19 +75,6 @@ Important:
 - Never paste real secrets in chat, screenshots, or pull requests
 
 ## How to run locally
-
-### Option A: Normal app mode (uses MongoDB)
-
-From backend folder:
-
-- npm start
-
-Expected:
-
-- Server starts on port 3000
-- API route available at /api/voucher-lookup
-
-### Option B: Fallback mode (for testing UI when Mongo fails)
 
 From backend folder:
 
@@ -279,3 +270,27 @@ If something fails and you are unsure:
 - Share what command you ran
 
 With those three things, debugging is usually fast.
+
+## How to find your MongoDB URI (MongoDB Atlas)
+
+Use these steps if you do not know where to get your URI:
+
+1. Sign in to MongoDB Atlas.
+2. Open your project, then open your cluster.
+3. Click Connect.
+4. Choose Drivers.
+5. Select Node.js as the driver.
+6. Copy the connection string shown by Atlas.
+7. Replace <username> and <password> with your database user credentials.
+8. Set the database name in the URI path to voucher-system if needed.
+9. Paste the final value into backend/.env as MONGODB_URI=...
+
+Example format:
+
+- MONGODB_URI=mongodb+srv://<username>:<password>@<cluster-host>/voucher-system?retryWrites=true&w=majority
+
+Important notes:
+
+- If your password has special characters (like @, #, :, /, ?), URL-encode it before placing it in the URI.
+- Never commit backend/.env.
+- If you suspect the URI was exposed, rotate the database password immediately.
