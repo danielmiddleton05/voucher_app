@@ -26,18 +26,18 @@ let db;
 const MONGODB_URI = process.env.MONGODB_URI;
 
 if (!MONGODB_URI) {
-	console.error("MONGODB_URI is not set. Add it to backend/.env or your runtime environment.");
-	process.exit(1);
+	console.warn("MONGODB_URI is not set. Running in local fallback mode without database.");
 }
 
 // Connect to MongoDB
 async function connectToMongoDB() {
+	if (!MONGODB_URI) {
+		return;
+	}
+
 	try {
 		console.log("Connecting to MongoDB...");
-		const client = new MongoClient(MONGODB_URI, {
-			useNewUrlParser: true,
-			useUnifiedTopology: true,
-		});
+		const client = new MongoClient(MONGODB_URI);
 
 		await client.connect();
 		db = client.db("voucher-system");

@@ -1,4 +1,4 @@
-# Voucher Lookup App - Contributor Guide (Beginner Friendly)
+# Voucher Lookup App - Contributor Guide
 
 This guide is for people who have little or no coding experience.
 
@@ -13,14 +13,13 @@ If you can follow checklists and copy/paste commands, you can safely update this
 ## Where things live
 
 - Frontend page: frontend/index.html
-- Main backend server (normal start): backend/server.js
-- Production HTTPS backend variant: backend/https-server.js
+- Main backend server (production and standard startup): backend/https-server.js
 - Local fallback backend (works even if Mongo auth fails): backend/simple-server.js
 - Backend package config and scripts: backend/package.json
 - Backend environment template: backend/.env.example
 - Git ignore rules: .gitignore
 
-## Big picture architecture (plain English)
+## Big picture architecture
 
 - Browser opens the frontend page.
 - Frontend sends a request to backend API endpoint.
@@ -131,8 +130,8 @@ Tip:
 
 Files:
 
-- backend/server.js
 - backend/https-server.js
+- backend/simple-server.js
 
 Look for messages like:
 
@@ -248,8 +247,7 @@ Check:
 ## File map for contributors
 
 - frontend/index.html: Web page UI and fetch call
-- backend/server.js: Main backend startup path
-- backend/https-server.js: HTTPS-oriented backend for hosted environments
+- backend/https-server.js: Main backend startup path (production and standard startup)
 - backend/simple-server.js: Local fallback runner
 - backend/package.json: npm scripts
 - backend/.env.example: Template for env variables

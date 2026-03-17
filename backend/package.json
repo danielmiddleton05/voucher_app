@@ -2,12 +2,11 @@
 	"name": "voucher-lookup-backend",
 	"version": "1.0.0",
 	"description": "Backend for voucher lookup system",
-	"main": "server.js",
+	"main": "https-server.js",
 	"scripts": {
-		"start": "node server.js",
-		"dev": "nodemon server.js",
+		"start": "node https-server.js",
+		"dev": "nodemon https-server.js",
 		"test-connection": "node test-connection.js",
-		"dev-local": "node server-local-dev.js",
 		"start-local-fallback": "node simple-server.js"
 	},
 	"dependencies": {
