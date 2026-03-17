@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Voucher Code Access</title>
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+
+			body {
+				font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+				background: linear-gradient(135deg, #163f6c 0%, #6699cf 100%);
+				min-height: 100vh;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				padding: 20px;
+			}
+
+			.container {
+				background: rgba(255, 255, 255, 0.95);
+				backdrop-filter: blur(10px);
+				border-radius: 20px;
+				padding: 40px;
+				box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+				width: 100%;
+				max-width: 500px;
+				text-align: center;
+				border: 1px solid rgba(255, 255, 255, 0.2);
+			}
+
+			h1 {
+				color: #333;
+				margin-bottom: 10px;
+				font-size: 2.2em;
+				font-weight: 600;
+			}
+
+			.subtitle {
+				color: #666;
+				margin-bottom: 30px;
+				font-size: 1.1em;
+			}
+
+			.form-group {
+				margin-bottom: 25px;
+				text-align: left;
+			}
+
+			label {
+				display: block;
+				margin-bottom: 8px;
+				color: #555;
+				font-weight: 500;
+			}
+
+			input[type="email"] {
+				width: 100%;
+				padding: 15px;
+				border: 2px solid #e1e5e9;
+				border-radius: 10px;
+				font-size: 16px;
+				transition: all 0.3s ease;
+				background: rgba(255, 255, 255, 0.8);
+			}
+
+			input[type="email"]:focus {
+				outline: none;
+				border-color: #667eea;
+				box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+				transform: translateY(-2px);
+			}
+
+			.btn {
+				background: linear-gradient(135deg, #163f6c 0%, #6699cf 100%);
+				color: white;
+				border: none;
+				padding: 15px 30px;
+				border-radius: 10px;
+				font-size: 16px;
+				font-weight: 600;
+				cursor: pointer;
+				transition: all 0.3s ease;
+				width: 100%;
+				text-transform: uppercase;
+				letter-spacing: 1px;
+			}
+
+			.btn:hover {
+				transform: translateY(-2px);
+				box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+			}
+
+			.btn:active {
+				transform: translateY(0);
+			}
+
+			.btn:disabled {
+				opacity: 0.6;
+				cursor: not-allowed;
+				transform: none;
+			}
+
+			.result {
+				margin-top: 25px;
+				padding: 20px;
+				border-radius: 10px;
+				font-weight: 500;
+				opacity: 0;
+				transform: translateY(20px);
+				transition: all 0.3s ease;
+			}
+
+			.result.show {
+				opacity: 1;
+				transform: translateY(0);
+			}
+
+			.success {
+				background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+				color: white;
+				border: 2px solid rgba(17, 153, 142, 0.3);
+			}
+
+			.error {
+				background: linear-gradient(135deg, #fc466b 0%, #ab1633 100%);
+				color: white;
+				border: 2px solid rgba(252, 70, 107, 0.3);
+			}
+
+			.voucher-code {
+				font-size: 1.8em;
+				font-weight: 700;
+				margin: 15px 0;
+				letter-spacing: 2px;
+				text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+			}
+
+			.loading {
+				display: none;
+				margin-top: 20px;
+			}
+
+			.spinner {
+				border: 3px solid rgba(102, 126, 234, 0.1);
+				border-top: 3px solid #667eea;
+				border-radius: 50%;
+				width: 30px;
+				height: 30px;
+				animation: spin 1s linear infinite;
+				margin: 0 auto;
+			}
+
+			@keyframes spin {
+				0% {
+					transform: rotate(0deg);
+				}
+				100% {
+					transform: rotate(360deg);
+				}
+			}
+
+			.support-link {
+				color: #667eea;
+				text-decoration: none;
+				font-weight: 600;
+			}
+
+			.support-link:hover {
+				text-decoration: underline;
+			}
+
+			@media (max-width: 600px) {
+				.container {
+					padding: 30px 20px;
+				}
+
+				h1 {
+					font-size: 1.8em;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<h1>Voucher Lookup</h1>
+			<p class="subtitle">Enter your email address to retrieve your voucher code</p>
+
+			<form id="voucherForm">
+				<div class="form-group">
+					<label for="email">Email Address:</label>
+					<input type="email" id="email" name="email" required placeholder="your.email@example.com" />
+				</div>
+
+				<button type="submit" class="btn" id="submitBtn">Look Up Voucher Code</button>
+			</form>
+
+			<div class="loading" id="loading">
+				<div class="spinner"></div>
+				<p>Searching for your voucher...</p>
+			</div>
+
+			<div id="result" class="result"></div>
+		</div>
+
+		<script>
+			// Get the API URL from the environment or use a default. Connects to EC2 instance
+			const API_URL = window.API_URL || "https://3.142.94.167.nip.io:3000/api/voucher-lookup";
+
+			const form = document.getElementById("voucherForm");
+			const emailInput = document.getElementById("email");
+			const submitBtn = document.getElementById("submitBtn");
+			const loading = document.getElementById("loading");
+			const result = document.getElementById("result");
+
+			form.addEventListener("submit", async (e) => {
+				e.preventDefault();
+
+				const email = emailInput.value.trim().toLowerCase();
+				console.log("Submitting email:", email);
+				console.log("API URL:", API_URL);
+
+				// Show loading state
+				showLoading();
+
+				try {
+					console.log("Sending request to:", API_URL);
+					const response = await fetch(API_URL, {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify({ email: email }),
+					});
+
+					console.log("Response status:", response.status);
+					const data = await response.json();
+					console.log("Response data:", data);
+
+					hideLoading();
+
+					if (response.ok && data.voucherCode) {
+						showSuccess(data.voucherCode);
+					} else {
+						showError(data.message || "No voucher found");
+					}
+				} catch (error) {
+					console.error("Error details:", error);
+					hideLoading();
+					showError(`Failed to connect to the server: ${error.message}`);
+				}
+			});
+
+			function showLoading() {
+				loading.style.display = "block";
+				submitBtn.disabled = true;
+				result.className = "result";
+			}
+
+			function hideLoading() {
+				loading.style.display = "none";
+				submitBtn.disabled = false;
+			}
+
+			function showSuccess(voucherCode) {
+				result.className = "result success show";
+				result.innerHTML = `
+					<p>Your voucher code is:</p>
+					<div class="voucher-code">${voucherCode}</div>
+					<p>Please save this code for future use!</p>
+				`;
+			}
+
+			function showError(message) {
+				result.className = "result error show";
+				result.innerHTML = `
+					<p>${message}</p>
+				`;
+			}
+		</script>
+	</body>
+</html>
