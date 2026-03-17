@@ -29,3 +29,8 @@ backend/certs/
 backend/*.pem
 backend/*.key
 backend/*.crt
+
+# Root-level certs/keys
+*.pem
+*.key
+*.crt
